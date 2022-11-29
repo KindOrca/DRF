@@ -60,3 +60,6 @@ class AuthView(APIView):
             return res
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+## sadfasdfas
