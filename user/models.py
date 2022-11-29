@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils import timezone
 class UserManager(BaseUserManager):
     # 일반 user 생성
     def create_user(self, email, login_id, name, age, gender, phone_number, password=None):
@@ -53,7 +52,6 @@ class User(AbstractBaseUser):
     phone_number = models.CharField(default='', max_length=12, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
     # User 모델의 필수 field
     is_active = models.BooleanField(default=True)    
     is_admin = models.BooleanField(default=False)

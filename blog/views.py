@@ -1,50 +1,84 @@
-from blog.models import Blog
-from blog.serializers import BlogSerializer
+# from django.shortcuts import render
+# from rest_framework.views import APIView
+# from rest_framework import status, viewsets
+# from rest_framework.response import Response
+# from blog.models import Blog
+# from blog.serializers import BlogSerializer
+# from django.http import Http404
+# from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+# from rest_framework.permissions import IsAuthenticatedOrReadOnly
+# from blog.permission import IsOwnerReadOnly
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.http import Http404
+# class BlogList(APIView):
+#     # Blog list를 보여줄 때
+#     def get(self, request):
+#         blogs = Blog.objects.all()
+#         # 여러 개의 객체를 serialization하기 위해 many=True로 설정
+#         serializer = BlogSerializer(blogs, many=True)
+#         return Response(serializer.data)
 
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+#     # 새로운 Blog 글을 작성할 때
+#     def post(self, request):
+#         # request.data는 사용자의 입력 데이터
+#         serializer = BlogSerializer(data=request.data)
+#         if serializer.is_valid(): #유효성 검사
+#             serializer.save() # 저장
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class BlogList(APIView):
-    def get(self, request):
-        blogs = Blog.objects.all()
-        serializer = BlogSerializer(blogs, many=True)
-        # print(serializer.data)
-        return Response(serializer.data)
+# # Blog의 detail을 보여주는 역할
+# class BlogDetail(APIView):
+#     # Blog 객체 가져오기
+#     def get_object(self, pk):
+#         try:
+#             return Blog.objects.get(pk=pk)
+#         except Blog.DoesNotExist:
+#             raise Http404
+    
+#     # Blog의 detail 보기
+#     def get(self, request, pk, format=None):
+#         blog = self.get_object(pk)
+#         serializer = BlogSerializer(blog)
+#         return Response(serializer.data)
 
-    def post(self, request): # 오버라이딩 한거라 이름 바꾸면 안됨
-        serializer = BlogSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     # Blog 수정하기
+#     def put(self, request, pk, format=None):
+#         blog = self.get_object(pk)
+#         serializer = BlogSerializer(blog, data=request.data) 
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data) 
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class BlogDetail(APIView):
-    def object(self, Primary_Key):
-        try:
-            return Blog.objects.get(pk=Primary_Key)
-        except Blog.DoesNotExist:
-            raise Http404
+#     # Blog 삭제하기
+#     def delete(self, request, pk, format=None):
+#         blog = self.get_object(pk)
+#         blog.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def get(self, request, Primary_Key, format=None):
-        blog = self.object(Primary_Key)
-        serializer = BlogSerializer(blog)
-        return Response(serializer.data)
+# # Blog의 목록, detail 보여주기, 수정하기, 삭제하기 모두 가능
+# class BlogViewSet(viewsets.ModelViewSet):
+#     # authentication 추가
+#     authentication_classes = [BasicAuthentication, SessionAuthentication]
+#     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
+#     queryset = Blog.objects.all()
+#     serializer_class = BlogSerializer
+    
+#     def perform_create(self, serializer):
+#         serializer.save(user = self.request.user)
+from .models import Blog
+from .serializers import BlogSerializer
+from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from blog.permission import IsOwnerReadOnly
+# Blog의 목록, detail 보여주기, 수정하기, 삭제하기 모두 가능
+class BlogViewSet(viewsets.ModelViewSet):
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
 
-    def put(self, request, Primary_Key, format=None):
-        blog = self.object(Primary_Key)
-        serializer = BlogSerializer(blog, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, Primary_Key, format=None):
-        blog = self.get_object(Primary_Key)
-        blog.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)  
+# serializer.save() 재정의
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)

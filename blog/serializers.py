@@ -1,7 +1,7 @@
-from blog.models import Blog
+from .models import Blog
 from rest_framework import serializers
-
 class BlogSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source = 'user.login_id')
     class Meta:
         model = Blog
-        fields = '__all__'
+        fields = ['id', 'title', 'created_at', 'user', 'body']

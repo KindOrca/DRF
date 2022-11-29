@@ -1,10 +1,18 @@
 from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
-from blog.views import BlogList, BlogDetail
+from .views import BlogViewSet
 
+# Blog 목록 보여주기
+blog_list = BlogViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+# Blog detail 보여주기 + 수정 + 삭제
+blog_detail = BlogViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'delete': 'destroy'
+})
 urlpatterns =[
-    path('blog/', BlogList.as_view()),
-    path('blog/<int:pk>/', BlogDetail.as_view()),
+    path('', blog_list),
+    path('<int:pk>/', blog_detail),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
