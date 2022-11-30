@@ -94,3 +94,8 @@ class SigninSirializer(serializers.ModelSerializer):
             'access_token' : str(token.access_token)
         }
         return data
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields=['name','gender','age','phone_number','created_at','last_login']
