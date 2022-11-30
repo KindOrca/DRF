@@ -24,15 +24,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    #
+
     "user",
     "blog",
-    #"django-model-utils",
+    "statistic",
+    "temp_logging",
+
     "rest_framework",
-    "rest_framework_tracking", #drf-logging
+    "rest_framework_tracking",
     "rest_framework_simplejwt",
     "django_extensions",
-    
+    'django_db_logger',
 ]
 
 REST_FRAMEWORK = {
@@ -238,4 +240,50 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
+
+# import json_log_formatter
+
+# class CustomisedJSONFormatter(json_log_formatter.JSONFormatter):
+#     def json_record(self, message, extra, record):
+#         extra['message'] = message
+#         extra['levelname'] = record.__dict__['levelname']
+#         extra['name'] = record.__dict__['name']
+#         extra['lineno'] = record.__dict__['lineno']
+#         extra['filename'] = record.__dict__['filename']
+#         extra['pathname'] = record.__dict__['pathname']
+#         extra['created'] = record.__dict__['created']
+#         request = extra.pop('request', None)
+#         if request:
+#             extra['x_forward_for'] = request.META.get('X-FORWARD-FOR')
+#         return extra
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+    },
+    'handlers': {
+        'db_log': {
+            'level': 'DEBUG',
+            'class': 'django_db_logger.db_log_handler.DatabaseLogHandler'
+        },
+    },
+    'loggers': {
+        'db': {
+            'handlers': ['db_log'],
+            'level': 'DEBUG'
+        },
+        'django.request': { # logging 500 errors to database
+            'handlers': ['db_log'],
+            'level': 'ERROR',
+            'propagate': False,
+        }
+    }
 }
