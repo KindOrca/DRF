@@ -72,22 +72,39 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from blog.permission import IsOwnerReadOnly
-
-#log
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import status
 import logging
 
 # Blog의 목록, detail 보여주기, 수정하기, 삭제하기 모두 가능
-class BlogViewSet(viewsets.ModelViewSet):
+# class BlogViewSet(viewsets.ModelViewSet):
+#     authentication_classes = [BasicAuthentication, SessionAuthentication]
+#     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
+#     queryset = Blog.objects.all()
+
+#     logger = logging.getLogger('my')
+
+#     serializer_class = BlogSerializer
+
+# # serializer.save() 재정의
+#     def perform_create(self, serializer):
+
+#         self.logger.info(f'(blogview) : {self.request.user.login_id} : {self.request.blog.id}') # print log data to file
+#         serializer.save(user = self.request.user)
+class BlogList(generics.ListCreateAPIView):
+    logger = logging.getLogger('my')
     authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
     queryset = Blog.objects.all()
-
-    logger = logging.getLogger('my')
-
     serializer_class = BlogSerializer
 
-# serializer.save() 재정의
     def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-        self.logger.info(f'(blogview) : {self.request.user.login_id} : {self.request.blog.id}') # print log data to file
-        serializer.save(user = self.request.user)
+
+class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
+    logger = logging.getLogger('my')
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer

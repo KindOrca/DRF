@@ -97,7 +97,6 @@ class SigninSirializer(serializers.ModelSerializer):
         return data
 
 class UserSerializer(serializers.ModelSerializer):
-    logger = logging.getLogger('my')
     class Meta:
         model = User
         fields=['name','gender','age','phone_number','created_at','last_login']
