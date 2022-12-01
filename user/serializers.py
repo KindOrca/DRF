@@ -25,6 +25,7 @@ from .models import User
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from user.models import User
+import logging
 class SignupSirializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required = True,
@@ -96,6 +97,7 @@ class SigninSirializer(serializers.ModelSerializer):
         return data
 
 class UserSerializer(serializers.ModelSerializer):
+    logger = logging.getLogger('my')
     class Meta:
         model = User
         fields=['name','gender','age','phone_number','created_at','last_login']
