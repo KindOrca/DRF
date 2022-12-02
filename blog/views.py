@@ -34,7 +34,7 @@
 #             return Blog.objects.get(pk=pk)
 #         except Blog.DoesNotExist:
 #             raise Http404
-    
+
 #     # Blog의 detail 보기
 #     def get(self, request, pk, format=None):
 #         blog = self.get_object(pk)
@@ -44,10 +44,10 @@
 #     # Blog 수정하기
 #     def put(self, request, pk, format=None):
 #         blog = self.get_object(pk)
-#         serializer = BlogSerializer(blog, data=request.data) 
+#         serializer = BlogSerializer(blog, data=request.data)
 #         if serializer.is_valid():
 #             serializer.save()
-#             return Response(serializer.data) 
+#             return Response(serializer.data)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #     # Blog 삭제하기
@@ -63,12 +63,11 @@
 #     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
 #     queryset = Blog.objects.all()
 #     serializer_class = BlogSerializer
-    
+
 #     def perform_create(self, serializer):
 #         serializer.save(user = self.request.user)
 from .models import Blog
 from .serializers import BlogSerializer
-from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from blog.permission import IsOwnerReadOnly
@@ -76,22 +75,6 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 import logging
-
-# Blog의 목록, detail 보여주기, 수정하기, 삭제하기 모두 가능
-# class BlogViewSet(viewsets.ModelViewSet):
-#     authentication_classes = [BasicAuthentication, SessionAuthentication]
-#     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
-#     queryset = Blog.objects.all()
-
-#     logger = logging.getLogger('my')
-
-#     serializer_class = BlogSerializer
-
-# # serializer.save() 재정의
-#     def perform_create(self, serializer):
-
-#         self.logger.info(f'(blogview) : {self.request.user.login_id} : {self.request.blog.id}') # print log data to file
-#         serializer.save(user = self.request.user)
 class BlogList(generics.ListCreateAPIView):
     logger = logging.getLogger('my')
     authentication_classes = [BasicAuthentication, SessionAuthentication]
@@ -102,9 +85,54 @@ class BlogList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method}')
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method}')
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
     logger = logging.getLogger('my')
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        print(request)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        serializer = self.get_serializer(instance)
+        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
+        return Response(status=status.HTTP_204_NO_CONTENT)

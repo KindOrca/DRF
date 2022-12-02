@@ -1,5 +1,7 @@
 from django.urls import path
 from blog.views import BlogList, BlogDetail
+from blog.serializers import BlogSerializer
+from blog.models import Blog
 from rest_framework.urlpatterns import format_suffix_patterns
 # from .views import BlogViewSet
 # # Blog 목록 보여주기
@@ -14,6 +16,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 #     'delete': 'destroy'
 # })
 urlpatterns =[
-    path('', BlogList.as_view()),
-    path('<int:pk>/', BlogDetail.as_view()),
+    path('', BlogList.as_view(queryset=Blog.objects.all(), serializer_class=BlogSerializer)),
+    path('<int:pk>', BlogDetail.as_view(queryset=Blog.objects.all(), serializer_class=BlogSerializer)),
 ]
