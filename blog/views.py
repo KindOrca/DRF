@@ -75,8 +75,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 import logging
+logger = logging.getLogger('my')
 class BlogList(generics.ListCreateAPIView):
-    logger = logging.getLogger('my')
     authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
     queryset = Blog.objects.all()
@@ -93,7 +93,8 @@ class BlogList(generics.ListCreateAPIView):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
-        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method}')
+        logger.info(f'(blogview) : {self.request.user.id} : {self.request.method}')
+        logger.info('So should this', extra ={'request':self.request.method,'user': self.request.user.id})
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -101,11 +102,10 @@ class BlogList(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method}')
+        logger.info(f'(blogview) : {self.request.user.id} : {self.request.method}')
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
-    logger = logging.getLogger('my')
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerReadOnly]
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
@@ -114,7 +114,7 @@ class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
         print(request)
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
+        logger.info(f'(blogview) userid:[{request.user}] : {self.request.method} :::: {serializer.data}')
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
@@ -127,12 +127,12 @@ class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
 
-        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
+        logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
         serializer = self.get_serializer(instance)
-        self.logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
+        logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
         return Response(status=status.HTTP_204_NO_CONTENT)

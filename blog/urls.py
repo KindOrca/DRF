@@ -17,5 +17,5 @@ from rest_framework.urlpatterns import format_suffix_patterns
 # })
 urlpatterns =[
     path('', BlogList.as_view(queryset=Blog.objects.all(), serializer_class=BlogSerializer)),
-    path('<int:pk>', BlogDetail.as_view(queryset=Blog.objects.all(), serializer_class=BlogSerializer)),
+    path('<int:pk>/', BlogDetail.as_view(queryset=Blog.objects.all(), serializer_class=BlogSerializer)),
 ]

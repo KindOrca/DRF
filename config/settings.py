@@ -5,7 +5,8 @@ import environ
 from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, "static") 
 
 env = environ.Env(DEBUG=(bool, True))
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
@@ -13,7 +14,7 @@ pymysql.install_as_MySQLdb()
 
 SECRET_KEY = env('SECRET_KEY')
 ALGORITHM = env('ALGORITHM')
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -28,6 +29,7 @@ INSTALLED_APPS = [
     #
     "user",
     "blog",
+    "statistic",
     #"django-model-utils",
     "rest_framework",
     "rest_framework_tracking", #drf-logging
@@ -38,8 +40,8 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.IsAdminUser',
+        #'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAdminUser',
         'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -145,19 +147,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = "ko-kr"
-
-# jwt 토큰은 simplejwt의 JWTAuthentication으로 인증한다.
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.AllowAny', # 누구나 접근
-        # 'rest_framework.permissions.IsAuthenticated', # 인증된 사용자만 접근
-        # 'rest_framework.permissions.IsAdminUser', # 관리자만 접근
-    ),
-}
+# # jwt 토큰은 simplejwt의 JWTAuthentication으로 인증한다.
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ),
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.AllowAny', # 누구나 접근
+#         'rest_framework.permissions.IsAuthenticated', # 인증된 사용자만 접근
+#         # 'rest_framework.permissions.IsAdminUser', # 관리자만 접근
+#     ),
+# }
 
 LANGUAGE_CODE = "ko-kr"
 TIME_ZONE = "Asia/Seoul"
@@ -241,6 +241,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+from .logging_edit import CustomisedJSONFormatter, CustomJsonFormatter
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -260,6 +262,12 @@ LOGGING = {
         },
         'standard': {
             'format': '{%(asctime)s [%(levelname)s] %(name)s: %(message)s}'
+        },
+        'standard1': {
+            '()' : CustomJsonFormatter,
+        },
+        'standard2': {
+            '()' : CustomisedJSONFormatter,
         },
     },
     'handlers': {
@@ -281,7 +289,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'encoding': 'utf-8',
-            'filters': ['require_debug_false'],
+            'filters': ['require_debug_true'],
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / 'logs/mysite.log',
             'maxBytes': 1024*1024*5,  # 5 MB
