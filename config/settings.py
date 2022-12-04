@@ -241,7 +241,7 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-from .logging_edit import CustomisedJSONFormatter, CustomJsonFormatter
+from .logging_edit import CustomJsonFormatter, CustomisedJSONFormatter
 
 LOGGING = {
     'version': 1,
@@ -263,10 +263,7 @@ LOGGING = {
         'standard': {
             'format': '{%(asctime)s [%(levelname)s] %(name)s: %(message)s}'
         },
-        'standard1': {
-            '()' : CustomJsonFormatter,
-        },
-        'standard2': {
+        'standard': {
             '()' : CustomisedJSONFormatter,
         },
     },

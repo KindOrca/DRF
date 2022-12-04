@@ -39,7 +39,6 @@ class UserAgeStatisticsView(APIView):
             "in_ones_sixties" : in_ones_sixties,
             "old_senier" : old_senier,
         })
-
 class ByTimeOfUserCountView(APIView):
     def get(self, response):
         recent = timezone.now() - timedelta(hours=24)
@@ -47,8 +46,8 @@ class ByTimeOfUserCountView(APIView):
         common_7 = timezone.now() - timedelta(days=7)
         # inf = datetime.date.today() - datetime.timedelta(years=100)
         recent_member = User.objects.filter(created_at__gte = recent).count()
-        members  = User.objects.filter(created_at__range = (common_1, common_7)).count()
-        VIP = User.objects.filter(created_at__lte = common_7).count()
+        members  = User.objects.filter(created_at__range = (common_7, common_1)).count()
+        VIP = User.objects.filter(created_at__lte=common_7).count()
         return Response({
             "recent_member" : recent_member,
             "Members" : members,

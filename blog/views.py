@@ -93,8 +93,7 @@ class BlogList(generics.ListCreateAPIView):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
-        logger.info(f'(blogview) : {self.request.user.id} : {self.request.method}')
-        logger.info('So should this', extra ={'request':self.request.method,'user': self.request.user.id})
+        logger.info('Get', extra={'request':request})
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -102,7 +101,7 @@ class BlogList(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        logger.info(f'(blogview) : {self.request.user.id} : {self.request.method}')
+        logger.info('Post', extra={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -111,10 +110,10 @@ class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BlogSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        print(request)
+        # print(request)
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        logger.info(f'(blogview) userid:[{request.user}] : {self.request.method} :::: {serializer.data}')
+        logger.info('Get', extra={'request':request})
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
@@ -127,12 +126,12 @@ class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
 
-        logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
+        logger.info('Put', extra={'request':request})
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
         serializer = self.get_serializer(instance)
-        logger.info(f'(blogview) : {self.request.user.id} : {self.request.method} : {serializer.data}')
+        logger.info('Delete', extra={'request':request})
         return Response(status=status.HTTP_204_NO_CONTENT)
