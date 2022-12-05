@@ -5,6 +5,7 @@ from .settings import env
 # https://ddolcat.tistory.com/713
 
 ENCRYPT_KEY = env('ENCRYPT_KEY')
+SALT = env('SALT')
 
 def hashing_userid(id):
     return hashlib.sha256((f"{id}").encode('ascii')).hexdigest()
@@ -20,12 +21,12 @@ def encrypt_data(data):
     key = ENCRYPT_KEY.encode('ascii')
     fernet = Fernet(key)
     encrypt_str = fernet.encrypt(f"{data}".encode('ascii'))
-    print(encrypt_str)
+    # print(encrypt_str)
     return encrypt_str
 
 def decrypt_data(encrypted_str):
     key = ENCRYPT_KEY.encode('ascii')
     fernet = Fernet(key)
     decrypt_str = fernet.decrypt(encrypted_str)
-    print(decrypt_str)
+    # print(decrypt_str)
     return decrypt_str
