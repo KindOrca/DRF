@@ -75,6 +75,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 import logging
+from config.hash import tolerantia
 logger = logging.getLogger('my')
 class BlogList(generics.ListCreateAPIView):
     authentication_classes = [BasicAuthentication, SessionAuthentication]
@@ -94,6 +95,8 @@ class BlogList(generics.ListCreateAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         logger.info('Get blogview', extra={'request':request,'user_id':self.request.user.id})
+        # print(self.request.user.pk)
+        tolerantia()
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):

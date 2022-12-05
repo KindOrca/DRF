@@ -1,7 +1,14 @@
-{"inDate": "2022-12-05T19:41:20.094Z", "detail": {"message": "Watching for file changes with StatReloader", "levelname": "INFO"}}
-{"url": "/blog/1/", "method": "GET", "board_id": 1, "user_id": "524992aa33539157ecf8558b13fa7ba4b3e09ca60f2719fe9125e05d5f3b6c8d", "inDate": "2022-12-05T19:41:24.414Z", "detail": {"message": "Get blogdetail", "levelname": "INFO"}, "x_forward_for": null}
-{"user_id": "524992aa33539157ecf8558b13fa7ba4b3e09ca60f2719fe9125e05d5f3b6c8d", "url": "/blog/", "method": "GET", "inDate": "2022-12-05T19:41:27.513Z", "detail": {"message": "Get blogview", "levelname": "INFO"}, "x_forward_for": null}
-{"inDate": "2022-12-05T19:45:33.479Z", "detail": {"message": "C:\\Users\\User\\OneDrive\\\ubc14\ud0d5 \ud654\uba74\\CP2_project\\DRF\\config\\logging_edit.py changed, reloading.", "levelname": "INFO"}}
-{"inDate": "2022-12-05T19:45:35.121Z", "detail": {"message": "Watching for file changes with StatReloader", "levelname": "INFO"}}
-{"inDate": "2022-12-05T19:47:44.136Z", "detail": {"message": "C:\\Users\\User\\OneDrive\\\ubc14\ud0d5 \ud654\uba74\\CP2_project\\DRF\\config\\hash.py changed, reloading.", "levelname": "INFO"}}
-{"inDate": "2022-12-05T19:47:45.623Z", "detail": {"message": "Watching for file changes with StatReloader", "levelname": "INFO"}}
+{
+    "recordid": "524992aa33539157ecf8558b13fa7ba4b3e09ca60f2719fe9125e05d5f3b6c8d",
+    "timestamp": 1670311558.44,
+    "data": {
+        "user_id": "524992aa33539157ecf8558b13fa7ba4b3e09ca60f2719fe9125e05d5f3b6c8d",
+        "url": "/blog/",
+        "method": "GET",
+        "inDate": "2022-12-06T07:25:58.440Z",
+        "detail": {
+            "message": "Get blogview",
+            "levelname": "INFO"
+        }
+    }
+},

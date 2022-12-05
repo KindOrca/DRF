@@ -1,7 +1,7 @@
 import json_log_formatter
 from datetime import datetime
 from pythonjsonlogger import jsonlogger
-from config.hash import hashing_userid
+from .hash import hashing_userid, tolerantia
 # class CustomJsonFormatter(jsonlogger.JsonFormatter):
 #     def add_fields(self, log_record, record, message_dict):
 #         super(CustomJsonFormatter, self).add_fields(
@@ -72,6 +72,7 @@ class MyCustomJsonFormatter(json_log_formatter.JSONFormatter):
                 pass
             else:
                 extra['board_id'] = int(extra['url'].replace('/blog/', '')[:-1])
+            
             # print('[', _request.user,']')
             if str(_request.user) != 'AnonymousUser':
                 # extra['user_id'] = _request.__dict__['_auth']['user_id'] ^ 0

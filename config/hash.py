@@ -1,7 +1,8 @@
 import hashlib
 from cryptography.fernet import Fernet
 from .settings import env
-
+import json
+from dateutil import parser
 # https://ddolcat.tistory.com/713
 
 ENCRYPT_KEY = env('ENCRYPT_KEY')
@@ -30,3 +31,22 @@ def decrypt_data(encrypted_str):
     decrypt_str = fernet.decrypt(encrypted_str)
     # print(decrypt_str)
     return decrypt_str
+
+def tolerantia():
+    with open('logs/mysite.log','r') as f:
+        line = f.readlines()[-1]
+    
+    data = json.loads(line)
+    id = data['user_id']
+    time = data['inDate']
+    epoch_time = parser.parse(time).timestamp()
+
+    temp = dict()
+    temp['recordid'] = id
+    temp['timestamp'] = epoch_time
+    temp['data'] = data
+
+    json_ = json.dumps(temp, indent=4)+',\n'
+
+    with open('logs/logInfo.json','a') as f:
+        f.write(json_)
