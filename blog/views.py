@@ -95,8 +95,6 @@ class BlogList(generics.ListCreateAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         logger.info('Get blogview', extra={'request':request,'user_id':self.request.user.id})
-        # print(self.request.user.pk)
-        tolerantia()
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -135,6 +133,5 @@ class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        serializer = self.get_serializer(instance)
         logger.info('Delete blogdetail', extra={'request':request})
         return Response(status=status.HTTP_204_NO_CONTENT)

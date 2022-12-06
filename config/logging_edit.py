@@ -1,7 +1,7 @@
 import json_log_formatter
 from datetime import datetime
 from pythonjsonlogger import jsonlogger
-from .hash import hashing_userid, tolerantia
+from .hash import hashing_userid
 # class CustomJsonFormatter(jsonlogger.JsonFormatter):
 #     def add_fields(self, log_record, record, message_dict):
 #         super(CustomJsonFormatter, self).add_fields(
