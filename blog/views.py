@@ -95,6 +95,7 @@ class BlogList(generics.ListCreateAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         logger.info('Get blogview', extra={'request':request,'user_id':self.request.user.id})
+        tolerantia()
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -103,6 +104,7 @@ class BlogList(generics.ListCreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         logger.info('Post blg view', extra={'request': request})
+        tolerantia()
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -115,6 +117,7 @@ class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         logger.info('Get blogdetail', extra={'request':request})
+        tolerantia()
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
@@ -128,10 +131,12 @@ class BlogDetail(generics.RetrieveUpdateDestroyAPIView):
             instance._prefetched_objects_cache = {}
 
         logger.info('Put blogdetail', extra={'request':request})
+        tolerantia()
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
         logger.info('Delete blogdetail', extra={'request':request})
+        tolerantia()
         return Response(status=status.HTTP_204_NO_CONTENT)

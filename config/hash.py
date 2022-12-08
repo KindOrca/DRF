@@ -23,16 +23,13 @@ class HashDjango():
         # 6개월에서 1년에 한 번씩 변경
         # key = Fernet.generate_key()
         #  >> 메서드를 호출할때 마다 새로운 키값 계속 형성
-        i=1
         encrypt_str = self.fernet.encrypt(f"{data}".encode('ascii'))
-        # print(encrypt_str)
         return encrypt_str
 
     def decrypt_data(self, encrypted_str):
         key = ENCRYPT_KEY.encode('ascii')
         fernet = Fernet(key)
         decrypt_str = fernet.decrypt(encrypted_str)
-        # print(decrypt_str)
         return decrypt_str
 
     def gen_fernet_key(self, passcode:bytes) -> bytes:
@@ -51,15 +48,12 @@ def tolerantia():
         line = f.readlines()[-1]
     
     data = json.loads(line)
-    # print(type(data))
-    # print(data)
-    # print(data['detail'])
-    id = data['user_id']
+
     time = data['inDate']
     epoch_time = parser.parse(time).timestamp()
 
     temp = dict()
-    temp['recordid'] = id
+    temp['recordid'] = data['user_id']
     temp['timestamp'] = epoch_time
     temp['data'] = HD.encrypt_data(data['detail']).decode('utf-8')
 
