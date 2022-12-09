@@ -3,6 +3,7 @@ from cryptography.fernet import Fernet
 from .settings import env
 import json
 from dateutil import parser
+import gzip
 # https://ddolcat.tistory.com/713
 
 ENCRYPT_KEY = env('ENCRYPT_KEY')
@@ -48,10 +49,8 @@ def tolerantia():
         line = f.readlines()[-1]
     
     data = json.loads(line)
-    print(data)
     time = data['inDate']
     epoch_time = parser.parse(time).timestamp()
-
     temp = dict()
     temp['recordid'] = data['user_id']
     temp['timestamp'] = epoch_time
@@ -59,5 +58,8 @@ def tolerantia():
 
     json_ = json.dumps(temp, indent=4)+',\n'
 
-    with open('logs/logInfo.json','a') as f:
-        f.write(json_)
+    # with gzip.open('logs/logInfo.json.gz','a') as f:
+    #     f.write(json_)
+
+    with gzip.open('logs/logInfo.json.gz', 'wb') as f:
+        f.write(json_.encode('utf-8'))
