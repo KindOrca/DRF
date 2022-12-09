@@ -32,7 +32,7 @@ def create_post(accessKey):
         response = requests.post('http://127.0.0.1:8000/blog/create/', json=data, headers=header)
         print(response.text)
         text = json.loads(response.text)
-        post_info_id.append(text['id'])    
+        post_info_id.append(text['id'])
     return post_info_id
 
 def destroy_post(post_info_id, accessKey):
@@ -45,6 +45,3 @@ def bot_schedule(num):
     accesskey = get_accessKey(bots)
     post_info = create_post(accesskey)
     destroy_post(post_info, accesskey)
-
-
-bot_schedule(2)

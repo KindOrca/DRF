@@ -60,6 +60,5 @@ def tolerantia():
 
     # with gzip.open('logs/logInfo.json.gz','a') as f:
     #     f.write(json_)
-
     with gzip.open('logs/logInfo.json.gz', 'wb') as f:
         f.write(json_.encode('utf-8'))
