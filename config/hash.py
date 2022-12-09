@@ -48,7 +48,7 @@ def tolerantia():
         line = f.readlines()[-1]
     
     data = json.loads(line)
-
+    print(data)
     time = data['inDate']
     epoch_time = parser.parse(time).timestamp()
 
