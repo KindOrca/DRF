@@ -46,6 +46,8 @@ def compress(data):
         data['url'] = data['url'][1:-1]
     except:
         pass
+    if not data['user_id']:
+        temp1 = str()
     dic2 = {
         'DEBUG':'0', 
         'INFO':'1', 

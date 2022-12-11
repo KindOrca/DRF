@@ -4,10 +4,14 @@ from .settings import env
 import json
 from dateutil import parser
 import gzip
+import os
+from b64uuid import B64UUID
+from config import s3uploading
 # https://ddolcat.tistory.com/713
 
 ENCRYPT_KEY = env('ENCRYPT_KEY')
 SALT = env('SALT')
+S3 = s3uploading.S3instant()
 
 def hashing_userid(id):
     return hashlib.sha256((f"{id}").encode('ascii')).hexdigest()
@@ -46,9 +50,9 @@ HD = HashDjango(bytes(ENCRYPT_KEY, 'utf-8'))
 
 def tolerantia():
     with open('logs/mysite.log','r') as f:
-        line = f.readlines()[-1]
+        line = f.readlines()
     
-    data = json.loads(line)
+    data = json.loads(line[-1])
     time = data['inDate']
     epoch_time = parser.parse(time).timestamp()
     temp = dict()
@@ -60,5 +64,12 @@ def tolerantia():
 
     # with gzip.open('logs/logInfo.json.gz','a') as f:
     #     f.write(json_)
-    with gzip.open('logs/logInfo.json.gz', 'wb') as f:
-        f.write(json_.encode('utf-8'))
+    if len(line) > 20:
+        with gzip.open('logs/logInfo.json.gz', 'wb') as f:
+            f.write(json_.encode('utf-8'))
+        with open('logs/mysite.log','w') as f:
+            f.write('')
+            
+        S3.s3uploadlog('logs/logInfo.json.gz')
+
+
